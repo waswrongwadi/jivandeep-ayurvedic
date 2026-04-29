@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Admin Panel — Jivandeep Ayurvedic Store</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .admin-container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+  .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid var(--grey-light); }
+  .admin-tabs { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .admin-tab { padding: 10px 24px; background: var(--grey-light); border: none; cursor: pointer; font-weight: 600; border-radius: 30px; transition: all 0.2s; }
+  .admin-tab.active { background: var(--sage); color: white; }
+  .admin-section { display: none; }
+  .admin-section.active { display: block; }
+  .products-table, .orders-table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: var(--radius-md); overflow-x: auto; display: block; }
+  .products-table th, .orders-table th,
+  .products-table td, .orders-table td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--grey-light); }
+  .products-table th, .orders-table th { background: var(--off-white); font-weight: 600; font-size: 13px; }
+  .edit-product-btn, .delete-product-btn { padding: 6px 12px; margin: 0 4px; border: none; cursor: pointer; border-radius: 6px; font-size: 12px; }
+  .edit-product-btn { background: var(--mint); color: var(--text-dark); }
+  .delete-product-btn { background: var(--error); color: white; }
+  .add-product-form { background: var(--white); padding: 24px; border-radius: var(--radius-md); margin-top: 24px; border: 1px solid var(--grey-light); }
+  .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px; }
+  .add-product-form input, .add-product-form select, .add-product-form textarea { width: 100%; padding: 10px; border: 1px solid var(--grey-light); border-radius: var(--radius-sm); font-family: var(--sans); }
+  .notification-dot { position: relative; }
+  .notification-dot::after { content: ''; position: absolute; top: -4px; right: -8px; width: 10px; height: 10px; background: var(--error); border-radius: 50%; }
+  .btn-primary { background: var(--sage); color: white; border: none; padding: 10px 24px; border-radius: 30px; cursor: pointer; font-weight: 600; margin-top: 16px; }
+  .admin-login { max-width: 400px; margin: 100px auto; background: var(--white); padding: 40px; border-radius: var(--radius-lg); text-align: center; box-shadow: var(--shadow-md); }
+  .admin-login input { width: 100%; padding: 12px; margin: 16px 0; border: 1px solid var(--grey-light); border-radius: var(--radius-sm); }
+  .logout-btn { background: var(--grey-light); border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: 500; }
+  @media (max-width: 768px) {
+    .products-table, .orders-table { font-size: 11px; }
+    .products-table th, .orders-table th,
+    .products-table td, .orders-table td { padding: 8px 6px; }
+    .admin-tab { padding: 8px 16px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="loginSection" class="admin-login">
+  <h2 style="font-family: var(--serif); margin-bottom: 16px;">Admin Login</h2>
+  <input type="password" id="adminPassword" placeholder="Enter password">
+  <button class="btn-primary" onclick="adminLogin()">Login</button>
+</div>
+
+<div id="adminPanel" style="display: none;">
+  <div class="admin-container">
+    <div class="admin-header">
+      <h2 style="font-family: var(--serif);">Jivandeep Admin Panel</h2>
+      <button class="logout-btn" onclick="adminLogout()">Logout</button>
+    </div>
+    
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('products')">Products</button>
+      <button class="admin-tab" onclick="switchTab('orders')">Orders <span id="newOrdersBadge"></span></button>
+    </div>
+    
+    <div id="productsSection" class="admin-section active">
+      <h3 style="margin-bottom: 16px;">Manage Products</h3>
+      <div id="productsTableContainer"></div>
+      
+      <div class="add-product-form">
+        <h4 style="margin-bottom: 16px;">Add New Product</h4>
+        <div class="form-row">
+          <input type="text" id="productName" placeholder="Product Name *">
+          <input type="number" id="productPrice" placeholder="Price (₹) *">
+          <select id="productCategory">
+            <option value="">Select Category *</option>
+            <option value="Herbal Supplements">Herbal Supplements</option>
+            <option value="Digestive Care">Digestive Care</option>
+            <option value="Brain Health">Brain Health</option>
+            <option value="Immunity">Immunity</option>
+            <option value="Skin Care">Skin Care</option>
+            <option value="Respiratory">Respiratory</option>
+            <option value="Joint Health">Joint Health</option>
+            <option value="Pain Relief">Pain Relief</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <textarea id="productDescription" rows="2" placeholder="Description *"></textarea>
+          <select id="productStock">
+            <option value="true">In Stock</option>
+            <option value="false">Out of Stock</option>
+          </select>
+          <input type="text" id="productImage" placeholder="Emoji or Image URL (optional)">
+        </div>
+        <button class="btn-primary" onclick="addProduct()">Add Product</button>
+      </div>
+    </div>
+    
+    <div id="ordersSection" class="admin-section">
+      <h3 style="margin-bottom: 16px;">Customer Orders</h3>
+      <div id="ordersTableContainer"></div>
+    </div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>
